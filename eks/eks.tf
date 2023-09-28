@@ -1,8 +1,8 @@
-module "iam"{
-    source = "../iam"
+module "iam" {
+  source = "../iam"
 }
-module "vpc"{
-    source = "../vpc"
+module "vpc" {
+  source = "../vpc"
 }
 
 module "eks" {
@@ -16,10 +16,10 @@ module "eks" {
   subnet_ids                     = [module.vpc.private_subnet_id]
   cluster_endpoint_public_access = true
 
-  eks_managed_node_group_defaults = {
-    ami_type = "AL2_x86_64"
+  # eks_managed_node_group_defaults = {
+  #   ami_type = "AL2_x86_64"
 
-  }
+  # }
 
   eks_managed_node_groups = {
 
@@ -43,7 +43,7 @@ module "eks" {
       desired_size = var.desire_size_app_node
     }
   }
-#   depends_on = [
-#     module.iam
-#   ]
+  #   depends_on = [
+  #     module.iam
+  #   ]
 }

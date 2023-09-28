@@ -1,11 +1,20 @@
 provider "aws" {
   region = var.region
 }
-
-module "db" {
-  source = "./db"
-
+provider "kubernetes" {
+  load_config_file = "false"
 }
+
+# module "db" {
+#   source = "./db"
+
+# }
+# output "PrivateIp" {
+#   value = module.db.PrivateIP #Double check this
+# }
+# module "eks_cluster"{
+#   source = "./eks"
+# }
 
 module "web" {
   source = "./web"
@@ -15,15 +24,8 @@ module "iam" {
   source = "./iam"
 }
 
-# module "eks_cluster"{
-#   source = "./eks"
-# }
-module "vpc"{
+module "vpc" {
   source = "./vpc"
-}
-
-output "PrivateIp" {
-  value = module.db.PrivateIP #Double check this
 }
 
 output "PublicIp" {
@@ -32,33 +34,48 @@ output "PublicIp" {
 
 resource "aws_eks_cluster" "eks_cluster" {
   name     = var.cluster_name
-  role_arn = module.iam.eks_iam_role_arn
-  version = "1.28"
+  role_arn = module.iam.eks_iam_role_worknodes_arn
+  version  = "1.28"
 
   vpc_config {
-    subnet_ids = ["subnet-09c37fdb4c5669f9d","subnet-037624adf72d00634"]
+    subnet_ids      = ["${module.vpc.public_subnet_id[0]}","${module.vpc.public_subnet_id[1]}"]
   }
   # cluster_endpoint_public_access = true
 
   depends_on = [
     module.iam
   ]
-
 }
 
-resource "aws_eks_node_group" "worker-node-group" {
-  cluster_name  = var.cluster_name
+resource "aws_eks_node_group" "system-node-group" {
+  cluster_name    = var.cluster_name
   node_group_name = "system"
-  node_role_arn  = module.iam.eks_iam_role_arn
-  subnet_ids = [module.vpc.private_subnet_id]
-  instance_types = [var.instance_type]
+  node_role_arn   = module.iam.eks_iam_role_worknodes_arn
+  subnet_ids      = ["${module.vpc.public_subnet_id[0]}","${module.vpc.public_subnet_id[1]}"]
+  instance_types  = [var.instance_type]
 
   scaling_config {
-   desired_size = 1
-   max_size   = 1
-   min_size   = 1
+    desired_size = 2
+    max_size     = 2
+    min_size     = 1
   }
- }
+  depends_on = [ aws_eks_cluster.eks_cluster ]
+}
+
+resource "aws_eks_node_group" "app-node-group" {
+  cluster_name    = var.cluster_name
+  node_group_name = "application"
+  node_role_arn   = module.iam.eks_iam_role_worknodes_arn
+  subnet_ids      = ["${module.vpc.public_subnet_id[0]}","${module.vpc.public_subnet_id[1]}"]
+  instance_types  = [var.instance_type]
+
+  scaling_config {
+    desired_size = 1
+    max_size     = 1
+    min_size     = 1
+  }
+  depends_on = [ aws_eks_cluster.eks_cluster ]
+}
 
 
 output "endpoint" {
