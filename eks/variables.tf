@@ -1,3 +1,6 @@
+variable "cluster_name" {
+  default = "kiu-testing"
+}
 variable "instance_type" {
   default = "t2.micro"
 }

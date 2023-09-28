@@ -1,6 +1,9 @@
 module "iam"{
     source = "../iam"
 }
+module "vpc"{
+    source = "../vpc"
+}
 
 module "eks" {
   source  = "terraform-aws-modules/eks/aws"
@@ -10,7 +13,7 @@ module "eks" {
   cluster_version = "1.28"
 
   vpc_id                         = module.vpc.vpc_id
-  subnet_ids                     = aws_subnet.private_subnet.id
+  subnet_ids                     = [module.vpc.private_subnet_id]
   cluster_endpoint_public_access = true
 
   eks_managed_node_group_defaults = {
@@ -18,12 +21,12 @@ module "eks" {
 
   }
 
-  node_groups = {
+  eks_managed_node_groups = {
 
     system = {
       name = "system-node"
 
-      instance_types = [locals.instance_type]
+      instance_types = [var.instance_type]
 
       min_size     = 1
       max_size     = var.max_size_system_node
@@ -40,7 +43,7 @@ module "eks" {
       desired_size = var.desire_size_app_node
     }
   }
-  depends_on = [
-    module.iam
-  ]
+#   depends_on = [
+#     module.iam
+#   ]
 }

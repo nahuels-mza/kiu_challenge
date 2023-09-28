@@ -10,7 +10,7 @@ variable "egress_port" {
 
 }
 resource "aws_security_group" "web_sg" {
-  name = "web security group"
+  name = "web_security_group"
   dynamic "ingress"{
     iterator = port
     for_each = var.ingress_port
