@@ -2,6 +2,10 @@ variable "region" {
   default = "us-west-1"
 }
 
+output "region" {
+  description = "AWS region"
+  value       = var.region
+}
 variable "cluster_name" {
   default = "kiu-test"
 }

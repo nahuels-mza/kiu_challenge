@@ -12,7 +12,7 @@ resource "aws_vpc" "kiu_vpc" {
 
 # Create a public subnet
 resource "aws_subnet" "public_subnet" {
-  count = 2
+  count                   = 2
   vpc_id                  = aws_vpc.kiu_vpc.id
   cidr_block              = element(["10.0.1.0/24", "10.0.2.0/24"], count.index)
   availability_zone       = data.aws_availability_zones.available.names[count.index]
@@ -25,10 +25,10 @@ resource "aws_subnet" "public_subnet" {
 
 # Create a private subnet
 resource "aws_subnet" "private_subnet" {
-  count = 1
+  count             = 1
   vpc_id            = aws_vpc.kiu_vpc.id
-  cidr_block              = element(["10.0.3.0/24", ], count.index)
-  availability_zone       = data.aws_availability_zones.available.names[count.index]
+  cidr_block        = element(["10.0.3.0/24", ], count.index)
+  availability_zone = data.aws_availability_zones.available.names[count.index]
   tags = {
     "kubernetes.io/cluster/kiu-test" = "shared"
     "kubernetes.io/role/elb"         = 1
@@ -39,9 +39,7 @@ resource "aws_subnet" "private_subnet" {
 output "public_subnet_id" {
   value = aws_subnet.public_subnet[*].id
 }
-# output "private_subnet_id" {
-#   value = aws_subnet.private_subnet.id
-# }
+
 output "vpc_id" {
   value = aws_vpc.kiu_vpc.id
 }
