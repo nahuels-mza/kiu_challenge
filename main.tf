@@ -2,6 +2,10 @@ module "web" {
   source = "./web"
 }
 
+module "db" {
+  source = "./db"
+}
+
 module "iam" {
   source = "./iam"
 }

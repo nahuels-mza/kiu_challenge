@@ -1,5 +1,7 @@
 # Define two availability zones (AZs)
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available" {
+  state = "available"
+}
 # Create a VPC
 resource "aws_vpc" "kiu_vpc" {
   cidr_block           = "10.0.0.0/16"

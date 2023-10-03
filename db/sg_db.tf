@@ -1,8 +1,12 @@
 # Security Group for RDS
+module "vpc" {
+  source = "../vpc"
+
+}
 resource "aws_security_group" "rdssg" {
   name        = "db"
   description = "security group for webservers"
-  vpc_id      = element(tolist(data.aws_vpcs.eks-vpc.ids), 0)
+  vpc_id      = module.vpc.vpc_id
 
 
   # Allowing traffic only for MySQL and that too from same VPC only.
