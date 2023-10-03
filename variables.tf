@@ -1,11 +1,11 @@
-variable "region" {
-  default = "us-west-1"
-}
+# variable "region" {
+#   default = "us-west-1"
+# }
 
-output "region" {
-  description = "AWS region"
-  value       = var.region
-}
+# output "region" {
+#   description = "AWS region"
+#   value       = var.region
+# }
 variable "cluster_name" {
   default = "kiu-test"
 }

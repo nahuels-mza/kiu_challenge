@@ -14,7 +14,7 @@ module "eip" {
 }
 
 module "sg" {
-  source = "../sg"
+  source = "../vpc"
 }
 
 output "pub_ip" {

@@ -21,6 +21,14 @@ resource "aws_security_group" "web_sg" {
       cidr_blocks = ["0.0.0.0/0"]
     }
   }
+  ingress {
+    description      = "SSH from VPC"
+    from_port        = 22
+    to_port          = 22
+    protocol         = "tcp"
+    cidr_blocks      = ["0.0.0.0/0"]
+    ipv6_cidr_blocks = ["::/0"]
+  }
   dynamic "egress" {
     iterator = port
     for_each = var.egress_port

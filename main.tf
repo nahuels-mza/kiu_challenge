@@ -1,21 +1,3 @@
-provider "aws" {
-  region = var.region
-}
-provider "kubernetes" {
-  load_config_file = "false"
-}
-
-# module "db" {
-#   source = "./db"
-
-# }
-# output "PrivateIp" {
-#   value = module.db.PrivateIP #Double check this
-# }
-# module "eks_cluster"{
-#   source = "./eks"
-# }
-
 module "web" {
   source = "./web"
 }
